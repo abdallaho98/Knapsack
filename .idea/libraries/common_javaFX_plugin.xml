@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="common-javaFX-plugin">
+    <CLASSES>
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/javaFX/lib/common-javaFX-plugin.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/javaFX/lib/javaFX-jps-plugin.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/javaFX/lib/javaFX.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/javaFX/lib/SceneBuilderKit-8.2.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

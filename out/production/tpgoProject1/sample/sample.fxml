@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="438.0" prefWidth="785.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+  <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="0.0" prefWidth="27.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="444.0" minWidth="10.0" prefWidth="371.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="373.0" minWidth="10.0" prefWidth="78.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="252.0" minWidth="10.0" prefWidth="199.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="80.0" minHeight="0.0" prefHeight="12.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="342.0" minHeight="10.0" prefHeight="229.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="195.0" minHeight="0.0" prefHeight="165.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <TableView fx:id="tableItem" prefHeight="248.0" prefWidth="311.0" style="-fx-background-color: #4a4a4a;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <columns>
+          <TableColumn fx:id="nbrArea" prefWidth="134.0" style="-fx-background-color: #ff8f00; -fx-border-color: #000000;" text="Nbr" />
+          <TableColumn fx:id="gainArea" prefWidth="141.0" style="-fx-background-color: #ff8f00; -fx-border-color: #000000;" text="Gain" />
+          <TableColumn fx:id="poidArea" prefWidth="123.0" style="-fx-background-color: #ff8f00; -fx-border-color: #000000;" text="Poid" />
+        </columns>
+      </TableView>
+      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <VBox layoutX="227.0" layoutY="10.0" prefHeight="100.0" prefWidth="154.0">
+                     <children>
+                        <Label text="Nombre :" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets left="50.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TextField fx:id="nbrText" prefHeight="34.0" prefWidth="95.0" promptText="entre nombre ici" />
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="79.0" prefWidth="58.0" />
+                  <VBox prefHeight="100.0" prefWidth="154.0">
+                     <children>
+                        <Label text="Gain :" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets left="50.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TextField fx:id="gainText" prefHeight="34.0" prefWidth="95.0" promptText="entre gain ici" />
+                     </children></VBox>
+                  <Separator layoutX="169.0" layoutY="10.0" orientation="VERTICAL" prefHeight="79.0" prefWidth="58.0" />
+                  <VBox prefHeight="100.0" prefWidth="159.0">
+                     <children>
+                        <Label prefHeight="52.0" prefWidth="44.0" text="Poids :" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets left="50.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TextField fx:id="poidsText" prefHeight="36.0" prefWidth="197.0" promptText="enter poids ici" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <Pane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="ajouter" alignment="CENTER" layoutX="60.0" layoutY="38.0" mnemonicParsing="false" onAction="#onAjouter" prefHeight="31.0" prefWidth="176.0" style="-fx-background-color: #FF8F00;" text="Ajouter Objet" textFill="WHITE" />
+               </children>
+            </Pane>
+         </children>
+      </VBox>
+      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+         <children>
+            <TextArea fx:id="weightMax" prefHeight="9.0" prefWidth="228.0" promptText="Enter Max size here">
+               <VBox.margin>
+                  <Insets left="30.0" right="30.0" top="50.0" />
+               </VBox.margin>
+            </TextArea>
+            <Button mnemonicParsing="false" onAction="#onCalcule" prefHeight="31.0" prefWidth="232.0" style="-fx-background-color: #FF8F00;" text="Calculer" textFill="WHITE">
+               <VBox.margin>
+                  <Insets left="50.0" right="50.0" top="50.0" />
+               </VBox.margin>
+            </Button>
+            <Label fx:id="sol" prefHeight="36.0" prefWidth="128.0" style="-fx-background-color: #4a4a4a; -fx-border-color: #FFFFFF; -fx-background-radius: 40; -fx-border-radius: 40;" text="Solution:" textFill="WHITE">
+               <VBox.margin>
+                  <Insets left="50.0" top="20.0" />
+               </VBox.margin>
+            </Label>
+         </children>
+      </VBox>
+      <Label fx:id="objs" prefHeight="97.0" prefWidth="294.0" textFill="#ff8f00" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+   </children>
+</GridPane>

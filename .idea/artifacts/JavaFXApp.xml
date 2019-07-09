@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="JavaFXApp">
+    <output-path>$PROJECT_DIR$/out/artifacts/JavaFXApp</output-path>
+    <root id="root">
+      <element id="archive" name="JavaFXApp.jar">
+        <element id="module-output" name="tpgoProject1" />
+      </element>
+      <element id="dir-copy" path="$APPLICATION_HOME_DIR$/jre64/lib/ext/jfxrt" />
+    </root>
+  </artifact>
+</component>

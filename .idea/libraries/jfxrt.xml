@@ -1,0 +1,20 @@
+<component name="libraryTable">
+  <library name="jfxrt">
+    <CLASSES>
+      <root url="jar://C:/Program Files/JetBrains/javafx_sdk-2_0_3-windows-x64.zip!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/javaFX/lib/common-javaFX-plugin.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/javaFX/lib/javaFX-jps-plugin.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/javaFX/lib/javaFX.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/javaFX/lib/SceneBuilderKit-8.2.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <excluded>
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/javaFX/lib/common-javaFX-plugin.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/javaFX/lib/javaFX-jps-plugin.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/javaFX/lib/javaFX.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/plugins/javaFX/lib/SceneBuilderKit-8.2.0.jar!/" />
+      <root url="jar://C:/Program Files/JetBrains/javafx_sdk-2_0_3-windows-x64.zip!/" />
+    </excluded>
+  </library>
+</component>
