@@ -176,7 +176,6 @@ public class Controller implements Initializable {
                     //objs.setText(objs.getText() + " " + k);
                 }
             }
-
             for(int k = 0 ; k < many.length ; k ++){
                 if(k % 5 == 0) objs.setText(objs.getText() + "\n");
                 objs.setText(objs.getText() + " " + k + "("+ many[k] +")");
