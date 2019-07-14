@@ -23,9 +23,9 @@
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="252.0" minWidth="10.0" prefWidth="199.0" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints maxHeight="80.0" minHeight="0.0" prefHeight="12.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="342.0" minHeight="10.0" prefHeight="229.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="195.0" minHeight="0.0" prefHeight="165.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="80.0" minHeight="0.0" prefHeight="54.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="342.0" minHeight="10.0" prefHeight="237.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="195.0" minHeight="0.0" prefHeight="143.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <TableView fx:id="tableItem" prefHeight="248.0" prefWidth="311.0" style="-fx-background-color: #4a4a4a;" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -74,12 +74,13 @@
             </HBox>
             <Pane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="ajouter" alignment="CENTER" layoutX="60.0" layoutY="38.0" mnemonicParsing="false" onAction="#onAjouter" prefHeight="31.0" prefWidth="176.0" style="-fx-background-color: #FF8F00;" text="Ajouter Objet" textFill="WHITE" />
+                  <Button fx:id="ajouter" alignment="CENTER" layoutX="14.0" layoutY="26.0" mnemonicParsing="false" onAction="#onAjouter" prefHeight="31.0" prefWidth="176.0" style="-fx-background-color: #FF8F00;" text="Ajouter Objet" textFill="WHITE" />
+                  <Button fx:id="importer" alignment="CENTER" layoutX="209.0" layoutY="26.0" mnemonicParsing="false" onAction="#onImport" prefHeight="31.0" prefWidth="176.0" style="-fx-background-color: #FF8F00;" text="Import File" textFill="WHITE" />
                </children>
             </Pane>
          </children>
       </VBox>
-      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+      <VBox prefHeight="218.0" prefWidth="226.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
          <children>
             <TextArea fx:id="weightMax" prefHeight="9.0" prefWidth="228.0" promptText="Enter Max size here">
                <VBox.margin>

@@ -6,9 +6,19 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
+import sun.security.krb5.internal.crypto.Des;
+import javafx.stage.Stage;
+
+import java.awt.*;
+import java.io.*;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -45,6 +55,7 @@ public class Controller implements Initializable {
     @FXML
     private void onCalcule(ActionEvent event) {
         if(!data.isEmpty() && weightMax.getText().length() > 0){
+            Date d1 = new Date();
             object[] lots = new object[data.size()];
             for(int i = 0;i < data.size() ; i++)lots[i] = data.get(i);
             int weight = Integer.parseInt(weightMax.getText());
@@ -55,6 +66,8 @@ public class Controller implements Initializable {
             solObjects = new int[lots.length];
             Arrays.fill(solObjects,0);
             Test(0,lots,weight,0,new int[lots.length]);
+            Date d2 = new Date();
+            show(String.valueOf((d2.getTime() - d1.getTime())));
             System.out.println(opt + "\n");
             sol.setText( " "+opt);
             objs.setText("");
@@ -69,6 +82,8 @@ public class Controller implements Initializable {
     @FXML
     private void onCalcule(ActionEvent event) {
         if(!data.isEmpty() && weightMax.getText().length() > 0){
+            Date d1 = new Date();
+            opt = 0;
             object[] lots = new object[data.size()];
             for(int i = 0;i < data.size() ; i++)lots[i] = data.get(i);
             int weight = Integer.parseInt(weightMax.getText());
@@ -83,6 +98,8 @@ public class Controller implements Initializable {
                 opt += solObjects[i] * lots[i].getGain();
                 weight -= solObjects[i] * lots[i].getPoid();
             }
+            Date d2 = new Date();
+            show(String.valueOf((d2.getTime() - d1.getTime())));
             System.out.println(opt + "\n");
             sol.setText( " "+opt);
             for (int i = 0 ; i < solObjects.length ; i++)objs.setText(objs.getText()+lots[i].getPoid() + " " + lots[i].getGain()+ " " +solObjects[i]+" \n" );
@@ -118,14 +135,17 @@ public class Controller implements Initializable {
         }
     }
 
+
     /*
     //Programmation Dynamique
     @FXML
     private void onCalcule(ActionEvent event) {
         if(!data.isEmpty() && weightMax.getText().length() > 0){
+            Date d1 = new Date();
             object[] lots = new object[data.size()];
             for(int i = 0;i < data.size() ; i++)lots[i] = data.get(i);
             int taille = 0;
+            for(int i = 0;i <lots.length;i++) lots[i].setNbr(Integer.parseInt(weightMax.getText())/lots[i].getPoid());
             for(int i = 0 ; i < lots.length ; i++) taille += lots[i].getNbr();
             obj[] objects = new obj[taille];
             int count = 0;
@@ -183,6 +203,8 @@ public class Controller implements Initializable {
                     //objs.setText(objs.getText() + " " + k);
                 }
             }
+            Date d2 = new Date();
+            show(String.valueOf((d2.getTime() - d1.getTime())));
             for(int k = 0 ; k < many.length ; k ++){
                 if(k % 5 == 0) objs.setText(objs.getText() + "\n");
                 objs.setText(objs.getText() + " " + k + "("+ many[k] +")");
@@ -212,7 +234,9 @@ public class Controller implements Initializable {
     //Genetic Algorithm
     @FXML
     private void onCalcule(ActionEvent event) {
+        Date d1 = new Date();
         if(!data.isEmpty() && weightMax.getText().length() > 0){
+            opt = 0;
             object[] lots = new object[data.size()];
             int taille = lots.length;
             for(int i = 0;i < taille ; i++)lots[i] = data.get(i);
@@ -221,7 +245,8 @@ public class Controller implements Initializable {
             solObjects = new int[taille];
             Arrays.fill(solObjects,0);
             int[][] population = new int[4][taille];
-            for(int i = 0 ; i < 4 ; i ++)for(int j = 0 ; j < taille ; j++) population[i][j] = (int) (Math.round(Math.random())* (lots[j].getNbr()-1) / 2 );
+            int pas = lots.length / 20;
+            for(int i = 0 ; i < 4 ; i ++)for(int j = 0 ; j < taille ; j+=pas) population[i][j] = (int) (Math.round(Math.random()) * 5 );
             for(int it = 0 ; it < 1000 ; it ++){
 
                 //selection
@@ -256,16 +281,11 @@ public class Controller implements Initializable {
                 //mutuelle
                 for (int i = 0 ; i < 4 ; i++){
                     int j = (int)(Math.round(Math.random())* (taille-1));
-                    population[i][j] = (int) (Math.round(Math.random())* lots[j].getNbr() / 2 );
+                    population[i][j] = (int) (Math.round(Math.random()));
                 }
                 for(int i = 0 ; i < 4 ; i++){eval[i] = Evaluation(lots,population[i],weight);total+=eval[i];}
 
 
-                //change population
-                for (int i = 0 ; i < 4 ; i++){
-                    for (int j = 0 ; j < taille ; j++)System.out.print(population[i][j]+ " ");
-                    System.out.println();
-                }
 
                 int min = 0, minEval = eval[0];
                 for (int i =1 ; i < 4 ; i++){
@@ -285,11 +305,6 @@ public class Controller implements Initializable {
                     eval[min] = eval2;
                 }
 
-                for (int i = 0 ; i < 4 ; i++){
-                    for (int j = 0 ; j < taille ; j++)System.out.print(population[i][j]+ " ");
-                    System.out.println();
-                }
-
 
                 //solution optimal
                 int max = 0 , maxEval = eval[0];
@@ -300,16 +315,14 @@ public class Controller implements Initializable {
                     }
                 }
                 int optLoc = maxEval;
-                System.out.println("solution optimal = "+optLoc + "\n objects" );
-                for(int i = 0 ; i < taille ; i ++)System.out.print(population[max][i]+ " ");
-                System.out.println(" \n ");
                 if(optLoc > opt){
                     opt = optLoc;
                     for(int i = 0 ; i < taille ; i ++)solObjects[i] = population[max][i];
                 }
             }
 
-
+            Date d2 = new Date();
+            show(String.valueOf((d2.getTime() - d1.getTime())));
             System.out.println(opt + "\n");
             sol.setText( " "+opt);
             objs.setText("");
@@ -317,6 +330,13 @@ public class Controller implements Initializable {
         }
     }
     */
+
+    void show(String text){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Time Calculating");
+        alert.setHeaderText(text + " Milisecondes");
+        alert.showAndWait();
+    }
 
 
     private int Evaluation(object[] lots,int[] individu,int max){
@@ -330,11 +350,13 @@ public class Controller implements Initializable {
         return eval;
     }
 
-
+    /*
     //Recuit Simulé
     @FXML
     private void onCalcule(ActionEvent event) {
         if(!data.isEmpty() && weightMax.getText().length() > 0){
+            opt = 0;
+            Date d1 = new Date();
             object[] lots = new object[data.size()];
             for(int i = 0;i < data.size() ; i++)lots[i] = data.get(i);
             int weight = Integer.parseInt(weightMax.getText());
@@ -395,6 +417,8 @@ public class Controller implements Initializable {
                 }
                 T *= k;
             }
+            Date d2 = new Date();
+            show(String.valueOf((d2.getTime() - d1.getTime())));
             System.out.println(opt + "\n");
             sol.setText( " "+opt);
             objs.setText("");
@@ -404,6 +428,36 @@ public class Controller implements Initializable {
             }
         }
     }
+    */
 
-
+    @FXML
+    public void onImport(ActionEvent event) {
+        System.out.println("clicked");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        File file = fileChooser.showOpenDialog(new Stage());
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        BufferedReader buf = new BufferedReader(new InputStreamReader(is));
+        try {
+            String line = buf.readLine();
+            object[] list= new object[Integer.parseInt(line)];
+            weightMax.setText(buf.readLine().trim());
+            for(int i = 0 ; i < list.length ; i ++){
+                String[] separator = new String[3];
+                separator[0] = " ";
+                separator[1] = "  ";
+                separator[2] = "   ";
+                String[] objct =  buf.readLine().split(  "\\s+");
+                list[i] = new object(0,Integer.parseInt(objct[0].trim()),Integer.parseInt(objct[1].trim()));
+            }
+            data.addAll(list);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
