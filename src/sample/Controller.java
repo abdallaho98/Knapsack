@@ -338,15 +338,70 @@ public class Controller implements Initializable {
             object[] lots = new object[data.size()];
             for(int i = 0;i < data.size() ; i++)lots[i] = data.get(i);
             int weight = Integer.parseInt(weightMax.getText());
+            int taille = lots.length;
             for(int i = 0;i <lots.length;i++) lots[i].setNbr(weight/lots[i].getPoid());
             solObjects = new int[lots.length];
             Arrays.fill(solObjects,0);
 
             //Recuit Simulé
+            opt = 0;
+            float T = 100f;
+            float eps = 1f;
+            float k = 0.9f;
+            int reste = weight;
+            for(int i = 0 ; i < taille ; i++){
+                solObjects[i] = (int)((Math.round(Math.random() * lots[i].getNbr())));
+                if(reste > solObjects[i] * lots[i].getPoid()){
+                    reste -= solObjects[i] * lots[i].getPoid();
+                    opt += solObjects[i] * lots[i].getGain();
+                } else{
+                    solObjects[i] = 0;
+                }
+            }
+            int[] solGenerator = new int[taille];
+            for (int j = 0 ; j<taille ; j++)solGenerator[j] = solObjects[j];
+            for(int i = 0 ; i < 100 && T > eps ; i++){
+                //generate solution
+                int position = 0;
+                int[] solLocal = new int[taille];
+                for (int j = 0 ; j<taille ; j++)solLocal[j] = solGenerator[j];
+                for(int j = 0 ; j < taille ; j++ ){
+                    if(solLocal[j] > 0)if((int) (Math.round(Math.random())) == 1) position = j;
+                }
+                int randomize = (int) (Math.round(Math.random() * solLocal[position]));
+                solLocal[position] -= randomize;
+                randomize = (int) (Math.round(Math.random() * (taille - 1)));
+                int resteLoc = weight;
+                for (int j = 0 ; j < taille ; j++)resteLoc -= solLocal[j] * lots[j].getPoid();
+                solLocal[randomize] +=  resteLoc / lots[randomize].getPoid();
+
+                //test solution
+                Boolean accept = false;
+                int eval = Evaluation(lots,solLocal,weight);
+                int delta = eval - opt;
+                if(delta>0){
+                    accept = true;
+                } else{
+                    accept = Math.random() <= Math.exp(delta/T);
+                }
+
+                if(accept){
+                    for (int j = 0 ; j<taille ; j++)solGenerator[j] = solLocal[j];
+                    int check = Evaluation(lots,solGenerator,weight);
+                    if(check > opt ){
+                        opt = check;
+                        for (int j = 0 ; j<taille ; j++)solObjects[j] = solGenerator[j];
+                    }
+                }
+                T *= k;
+            }
             System.out.println(opt + "\n");
             sol.setText( " "+opt);
             objs.setText("");
-            for (int i = 0 ; i < solObjects.length ; i++)objs.setText(objs.getText()+lots[i].getPoid() + " " + lots[i].getGain()+ " " +solObjects[i]+" \n" );
+            for (int i = 0 ; i < solObjects.length ; i++){
+                System.out.println(lots[i].getPoid() + " " + lots[i].getGain()+ " " +solObjects[i]);
+                objs.setText(objs.getText()+lots[i].getPoid() + " " + lots[i].getGain()+ " " +solObjects[i]+" \n" );
+            }
         }
     }
 
