@@ -77,7 +77,7 @@ public class Controller implements Initializable {
     */
 
 
-    /*
+
     //Heuristique
     @FXML
     private void onCalcule(ActionEvent event) {
@@ -105,7 +105,7 @@ public class Controller implements Initializable {
             for (int i = 0 ; i < solObjects.length ; i++)objs.setText(objs.getText()+lots[i].getPoid() + " " + lots[i].getGain()+ " " +solObjects[i]+" \n" );
         }
     }
-    */
+
 
 
     private void Permute(int i, int j, object[] lots) {
