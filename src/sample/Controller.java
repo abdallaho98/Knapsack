@@ -41,7 +41,7 @@ public class Controller implements Initializable {
     }
 
     /*
-    Branch and Bound
+    //Branch and Bound
     @FXML
     private void onCalcule(ActionEvent event) {
         if(!data.isEmpty() && weightMax.getText().length() > 0){
@@ -57,13 +57,15 @@ public class Controller implements Initializable {
             Test(0,lots,weight,0,new int[lots.length]);
             System.out.println(opt + "\n");
             sol.setText( " "+opt);
+            objs.setText("");
             for (int i = 0 ; i < solObjects.length ; i++)objs.setText(objs.getText()+lots[i].getPoid() + " " + lots[i].getGain()+ " " +solObjects[i]+" \n" );
         }
     }
     */
 
+
     /*
-    Heuristique
+    //Heuristique
     @FXML
     private void onCalcule(ActionEvent event) {
         if(!data.isEmpty() && weightMax.getText().length() > 0){
@@ -117,7 +119,7 @@ public class Controller implements Initializable {
     }
 
     /*
-    Programmation Dynamique
+    //Programmation Dynamique
     @FXML
     private void onCalcule(ActionEvent event) {
         if(!data.isEmpty() && weightMax.getText().length() > 0){
@@ -190,6 +192,7 @@ public class Controller implements Initializable {
     }
     */
 
+
     @FXML
     private void onAjouter(ActionEvent event) {
         data = tableItem.getItems();
@@ -205,7 +208,7 @@ public class Controller implements Initializable {
         nbrText.setText("");
     }
 
-
+    /*
     //Genetic Algorithm
     @FXML
     private void onCalcule(ActionEvent event) {
@@ -218,8 +221,8 @@ public class Controller implements Initializable {
             solObjects = new int[taille];
             Arrays.fill(solObjects,0);
             int[][] population = new int[4][taille];
-            for(int i = 0 ; i < taille ; i ++)for(int j = 0 ; j < taille ; j++) population[i][j] = (int) (Math.round(Math.random())* lots[j].getNbr() );
-            for(int it = 0 ; it < 10 ; it ++){
+            for(int i = 0 ; i < 4 ; i ++)for(int j = 0 ; j < taille ; j++) population[i][j] = (int) (Math.round(Math.random())* (lots[j].getNbr()-1) / 2 );
+            for(int it = 0 ; it < 1000 ; it ++){
 
                 //selection
                 int[] eval = new int[4];
@@ -259,6 +262,11 @@ public class Controller implements Initializable {
 
 
                 //change population
+                for (int i = 0 ; i < 4 ; i++){
+                    for (int j = 0 ; j < taille ; j++)System.out.print(population[i][j]+ " ");
+                    System.out.println();
+                }
+
                 int min = 0, minEval = eval[0];
                 for (int i =1 ; i < 4 ; i++){
                     if(minEval > eval[i]){minEval = eval[i];min = i;}
@@ -268,6 +276,7 @@ public class Controller implements Initializable {
                     eval[min] = eval1;
                 }
 
+                min = 0; minEval = eval[0];
                 for (int i =1 ; i < 4 ; i++){
                     if(minEval > eval[i]){minEval = eval[i];min = i;}
                 }
@@ -275,6 +284,12 @@ public class Controller implements Initializable {
                     population[min] = cromosome2prime;
                     eval[min] = eval2;
                 }
+
+                for (int i = 0 ; i < 4 ; i++){
+                    for (int j = 0 ; j < taille ; j++)System.out.print(population[i][j]+ " ");
+                    System.out.println();
+                }
+
 
                 //solution optimal
                 int max = 0 , maxEval = eval[0];
@@ -284,19 +299,24 @@ public class Controller implements Initializable {
                         maxEval = eval[i];
                     }
                 }
-                opt = maxEval;
-                System.out.println("solution optimal = "+opt + "\n objects" );
+                int optLoc = maxEval;
+                System.out.println("solution optimal = "+optLoc + "\n objects" );
                 for(int i = 0 ; i < taille ; i ++)System.out.print(population[max][i]+ " ");
                 System.out.println(" \n ");
-
+                if(optLoc > opt){
+                    opt = optLoc;
+                    for(int i = 0 ; i < taille ; i ++)solObjects[i] = population[max][i];
+                }
             }
 
 
             System.out.println(opt + "\n");
             sol.setText( " "+opt);
+            objs.setText("");
             for (int i = 0 ; i < solObjects.length ; i++)objs.setText(objs.getText()+lots[i].getPoid() + " " + lots[i].getGain()+ " " +solObjects[i]+" \n" );
         }
     }
+    */
 
 
     private int Evaluation(object[] lots,int[] individu,int max){
@@ -308,6 +328,26 @@ public class Controller implements Initializable {
         }
         if(weight > max)eval = 0;
         return eval;
+    }
+
+
+    //Recuit Simulé
+    @FXML
+    private void onCalcule(ActionEvent event) {
+        if(!data.isEmpty() && weightMax.getText().length() > 0){
+            object[] lots = new object[data.size()];
+            for(int i = 0;i < data.size() ; i++)lots[i] = data.get(i);
+            int weight = Integer.parseInt(weightMax.getText());
+            for(int i = 0;i <lots.length;i++) lots[i].setNbr(weight/lots[i].getPoid());
+            solObjects = new int[lots.length];
+            Arrays.fill(solObjects,0);
+
+            //Recuit Simulé
+            System.out.println(opt + "\n");
+            sol.setText( " "+opt);
+            objs.setText("");
+            for (int i = 0 ; i < solObjects.length ; i++)objs.setText(objs.getText()+lots[i].getPoid() + " " + lots[i].getGain()+ " " +solObjects[i]+" \n" );
+        }
     }
 
 
