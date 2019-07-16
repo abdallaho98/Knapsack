@@ -58,6 +58,7 @@ public class Controller implements Initializable {
                 "Programmation dynamique",
                 "Algorithme Génétique",
                 "Recuit Simulé",
+                "Recherche Tabou",
                 "Branch and Bound");
         method.setItems(items);
     }
@@ -140,6 +141,31 @@ public class Controller implements Initializable {
 
                 params.getChildren().addAll(tuple5, tuple6, tuple7, tuple8);
                 break;
+            case "Recherche Tabou" :
+                HBox tupleT = new HBox();
+                Label iterationLabelT = new Label("Itérations:                 ");
+                iterationLabelT.setStyle("-fx-text-fill: white;");
+                tupleT.getChildren().add(iterationLabelT);
+                TextField iterationsT = new TextField();
+                tupleT.getChildren().add(iterationsT);
+
+                HBox tuple2T = new HBox();
+                Label popLabelT = new Label("Taille population:          ");
+                popLabelT.setStyle("-fx-text-fill: white;");
+                tuple2T.getChildren().add(popLabelT);
+                TextField popT = new TextField();
+                tuple2T.getChildren().add(popT);
+
+                HBox tuple3T = new HBox();
+                Label mutLabelT = new Label("Taille Liste Tabu:          ");
+                mutLabelT.setStyle("-fx-text-fill: white;");
+                tuple3T.getChildren().add(mutLabelT);
+                TextField mutT = new TextField();
+                tuple3T.getChildren().add(mutT);
+
+
+                params.getChildren().addAll(tupleT, tuple2T, tuple3T);
+                break;
             case "Branch and Bound":
                 params.getChildren().add(nothing);
                 break;
@@ -165,6 +191,12 @@ public class Controller implements Initializable {
                 int mut = Integer.parseInt(((TextField) ((HBox) params.getChildren().get(2)).getChildren().get(1)).getText());
                 int cross = Integer.parseInt(((TextField) ((HBox) params.getChildren().get(3)).getChildren().get(1)).getText());
                 GA(event, iterations, pop, mut, cross);
+                break;
+            case "Recherche Tabou":
+                int itr = Integer.parseInt(((TextField) ((HBox) params.getChildren().get(0)).getChildren().get(1)).getText());
+                int p = Integer.parseInt(((TextField) ((HBox) params.getChildren().get(1)).getChildren().get(1)).getText());
+                int nT = Integer.parseInt(((TextField) ((HBox) params.getChildren().get(2)).getChildren().get(1)).getText());
+                tabuSearch(nT,itr,p);
                 break;
             case "Recuit Simulé":
                 float T = Float.parseFloat(((TextField) ((HBox) params.getChildren().get(0)).getChildren().get(1)).getText());
@@ -672,6 +704,83 @@ public class Controller implements Initializable {
             for (int i = 0; i < solObjects.length; i++)
                 objs.setText(objs.getText() + lots[i].getPoid() + " " + lots[i].getGain() + " " + solObjects[i] + " \n");
         }
+    }
+
+    private void tabuSearch(int nT,int it,int p){
+        if (!data.isEmpty() && weightMax.getText().length() > 0) {
+            Date d1 = new Date();
+            opt = 0;
+            object[] lots = new object[data.size()];
+            for (int i = 0; i < data.size(); i++) lots[i] = data.get(i);
+            int weight = Integer.parseInt(weightMax.getText());
+            for (int i = 0; i < lots.length; i++)
+                for (int j = i; j < lots.length; j++)
+                    if ((lots[i].getGain() / lots[i].getPoid()) < (lots[j].getGain() / lots[j].getPoid()))
+                        Permute(i, j, lots);
+
+            for (int i = 0; i < lots.length; i++) lots[i].setNbr(weight / lots[i].getPoid());
+            solObjects = new int[lots.length];
+            Arrays.fill(solObjects, 0);
+            for (int i = 0; i < lots.length; i++) {
+                solObjects[i] += weight / lots[i].getPoid();
+                opt += solObjects[i] * lots[i].getGain();
+                weight -= solObjects[i] * lots[i].getPoid();
+            }
+            //solution constructive
+            weight = Integer.parseInt(weightMax.getText());
+            int taille = lots.length;
+            Tabu[] listeTabu = new Tabu[nT];
+            int indexTabu = 0;
+            for(int i = 0 ; i < nT ; i++)listeTabu[i] = new Tabu(0,new int[taille]);
+            int[] solGenerator = new int[taille];
+            for(int i = 0 ; i < taille ; i++)solGenerator[i] = solObjects[i];
+            listeTabu[0] = new Tabu(opt,solGenerator);
+            for(int i = 0 ; i < it ; i++){
+                Tabu[] pop = new Tabu[p];
+                ArrayList<Integer> alea = new ArrayList();
+                int max = 0;
+                int indexMax = 0;
+                for(int j = 0 ; j < taille ; j++)if(solGenerator[j] > 0)alea.add(j);
+                for(int j = 0 ; j < p ; j++){
+                    int position = (int) (Math.random() * alea.size());
+                    int pos = alea.get(position);
+                    int[] solLocal = new int[taille];
+                    for(int k = 0 ; k < taille ; k++)solLocal[k] = solGenerator[k];
+                    solLocal[pos] -=  (int) (Math.random() * solLocal[pos]);
+                    position =(int) (Math.random() * (taille - 1));
+                    solLocal[position] += weight / lots[position].getPoid();
+                    pop[j] = new Tabu(Evaluation(lots,solLocal,weight),solLocal);
+                    if(pop[j].getCout() > max){
+                        max = pop[j].getCout();
+                        indexMax = j;
+                    }
+                }
+                if(max > opt){
+                    opt = max;
+                    for (int j = 0 ; j < taille ; j++)solObjects[j] = pop[indexMax].getObjects()[j];
+                }
+                boolean exist = false;
+                for (int j = 0 ; j < nT ; j++)if(pop[indexMax].equals(listeTabu[j]))exist = true;
+                if(!exist && max >= Evaluation(lots,solGenerator,weight)){
+                    listeTabu[indexTabu] = pop[indexMax];
+                    solGenerator = pop[indexMax].getObjects();
+                    if(indexTabu == nT){
+                        indexTabu = 0;
+                    }else{
+                        indexTabu++;
+                    }
+                }
+            }
+
+
+            Date d2 = new Date();
+            show(String.valueOf((d2.getTime() - d1.getTime())));
+            System.out.println(opt + "\n");
+            sol.setText(" " + opt);
+            for (int i = 0; i < solObjects.length; i++)
+                objs.setText(objs.getText() + lots[i].getPoid() + " " + lots[i].getGain() + " " + solObjects[i] + " \n");
+        }
+
     }
 
 
