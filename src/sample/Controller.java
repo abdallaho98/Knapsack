@@ -19,10 +19,7 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class Controller implements Initializable {
 
@@ -56,6 +53,8 @@ public class Controller implements Initializable {
         tableItem.setItems(data);
 
         ObservableList<String> items = FXCollections.observableArrayList("Heuristique",
+                "Largest First",
+                "Smallest First",
                 "Programmation dynamique",
                 "Algorithme Génétique",
                 "Recuit Simulé",
@@ -145,6 +144,7 @@ public class Controller implements Initializable {
                 params.getChildren().add(nothing);
                 break;
             default:
+                params.getChildren().add(nothing);
                 break;
         }
     }
@@ -175,6 +175,12 @@ public class Controller implements Initializable {
                 break;
             case "Branch and Bound":
                 BNB(event);
+                break;
+            case  "Smallest First":
+                smallestFirst();
+                break;
+            case "Largest First" :
+                largeFirst();
                 break;
         }
     }
@@ -380,9 +386,9 @@ public class Controller implements Initializable {
             solObjects = new int[taille];
             Arrays.fill(solObjects, 0);
             int[][] population = new int[pop][taille];
-            int pas = lots.length / 20;
+            int pas = lots.length / 5;
             for (int i = 0; i < pop; i++)
-                for (int j = 0; j < taille; j += pas) population[i][j] = (int) (Math.round(Math.random()) * 5);
+                for (int j = 0; j < taille; j += pas + (int) (Math.round(Math.random()) * pas)) population[i][j] = (int) (Math.round(Math.random()) * lots[i].getNbr());
             for (int it = 0; it < iter; it++) {
 
                 //selection
@@ -418,9 +424,11 @@ public class Controller implements Initializable {
                 int eval1 = Evaluation(lots, cromosome1prime, weight), eval2 = Evaluation(lots, cromosome2prime, weight);
 
                 //mutuelle
-                for (int i = 0; i < pop; i++) {
+                int limite = mut < pop? mut  : pop;
+                for (int i = 0; i < limite; i++) {
                     int j = (int) (Math.round(Math.random()) * (taille - 1));
-                    population[i][j] = (int) (Math.round(Math.random()));
+                    int lim = lots[j].getNbr();
+                    population[i][j] = (int) (Math.round(Math.random())* lim);
                 }
                 for (int i = 0; i < pop; i++) {
                     eval[i] = Evaluation(lots, population[i], weight);
@@ -569,7 +577,7 @@ public class Controller implements Initializable {
             sol.setText(" " + opt);
             objs.setText("");
             for (int i = 0; i < solObjects.length; i++) {
-                System.out.println(lots[i].getPoid() + " " + lots[i].getGain() + " " + solObjects[i]);
+                if(solObjects[i] >0)System.out.println(lots[i].getPoid() + " " + lots[i].getGain() + " " + solObjects[i]);
                 objs.setText(objs.getText() + lots[i].getPoid() + " " + lots[i].getGain() + " " + solObjects[i] + " \n");
             }
         }
@@ -578,6 +586,7 @@ public class Controller implements Initializable {
 
     @FXML
     public void onImport(ActionEvent event) {
+        data.clear();
         System.out.println("clicked");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
@@ -606,4 +615,65 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
     }
+
+
+    private void largeFirst(){
+        if (!data.isEmpty() && weightMax.getText().length() > 0) {
+            Date d1 = new Date();
+            opt = 0;
+            object[] lots = new object[data.size()];
+            for (int i = 0; i < data.size(); i++) lots[i] = data.get(i);
+            int weight = Integer.parseInt(weightMax.getText());
+            for (int i = 0; i < lots.length; i++)
+                for (int j = i; j < lots.length; j++)
+                    if (lots[i].getGain() < lots[j].getGain() )
+                        Permute(i, j, lots);
+            for (int i = 0; i < lots.length; i++) lots[i].setNbr(weight / lots[i].getPoid());
+            solObjects = new int[lots.length];
+            Arrays.fill(solObjects, 0);
+            for (int i = 0; i < lots.length; i++) {
+                solObjects[i] += weight / lots[i].getPoid();
+                opt += solObjects[i] * lots[i].getGain();
+                weight -= solObjects[i] * lots[i].getPoid();
+            }
+            Date d2 = new Date();
+            show(String.valueOf((d2.getTime() - d1.getTime())));
+            System.out.println(opt + "\n");
+            sol.setText(" " + opt);
+            for (int i = 0; i < solObjects.length; i++)
+                objs.setText(objs.getText() + lots[i].getPoid() + " " + lots[i].getGain() + " " + solObjects[i] + " \n");
+        }
+    }
+
+    private void smallestFirst(){
+        if (!data.isEmpty() && weightMax.getText().length() > 0) {
+            Date d1 = new Date();
+            opt = 0;
+            object[] lots = new object[data.size()];
+            for (int i = 0; i < data.size(); i++) lots[i] = data.get(i);
+            int weight = Integer.parseInt(weightMax.getText());
+            for (int i = 0; i < lots.length; i++)
+                for (int j = i; j < lots.length; j++)
+                    if (lots[i].getGain() < lots[j].getGain() )
+                        Permute(i, j, lots);
+            Collections.reverse(Arrays.asList(lots));
+            for (int i = 0; i < lots.length; i++) lots[i].setNbr(weight / lots[i].getPoid());
+            solObjects = new int[lots.length];
+            Arrays.fill(solObjects, 0);
+            for (int i = 0; i < lots.length; i++) {
+                solObjects[i] += weight / lots[i].getPoid();
+                opt += solObjects[i] * lots[i].getGain();
+                weight -= solObjects[i] * lots[i].getPoid();
+            }
+            Date d2 = new Date();
+            show(String.valueOf((d2.getTime() - d1.getTime())));
+            System.out.println(opt + "\n");
+            sol.setText(" " + opt);
+            for (int i = 0; i < solObjects.length; i++)
+                objs.setText(objs.getText() + lots[i].getPoid() + " " + lots[i].getGain() + " " + solObjects[i] + " \n");
+        }
+    }
+
+
+
 }
