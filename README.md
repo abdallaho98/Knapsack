@@ -3,4 +3,4 @@
 -Branch And Bound \
 -Genetic Algorithm \
 -Tabu Search \
--simulated annealing \
+-simulated annealing 
